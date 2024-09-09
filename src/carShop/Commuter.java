@@ -40,10 +40,4 @@ public class Commuter extends Car {
                 "Trunk Space: " + getTrunkSpace() + " cubic feet | " +
                 "Family Friendly: " + (isFamilyFriendly() ? "Yes" : "No");
     }
-
-    @Override
-    public double calculateResaleValue(int years) {
-        double depreciationRate = 0.2; // because maintenance is not the first priority of commuter car owners
-        return getPrice() * Math.pow(1 - depreciationRate, years);
-    }
 }

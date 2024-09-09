@@ -15,13 +15,6 @@ public class Customer implements User {
         purchasedCars = new ArrayList<Car>();
     }
 
-    public Customer(String nameParam, String addressParam, String contactInfoParam) {
-        name = nameParam;
-        address = addressParam;
-        contactInfo = contactInfoParam;
-        purchasedCars = new ArrayList<Car>();
-    }
-
     public String getName() {
         return name;
     }
@@ -56,21 +49,21 @@ public class Customer implements User {
 
     @Override
     public String getUserInfo() {
-        StringBuilder userInfo = new StringBuilder();
-        userInfo.append("Name: ").append(getName()).append("\n")
-                .append("Address: ").append(getAddress()).append("\n")
-                .append("Contact Info: ").append(getContactInfo()).append("\n")
-                .append("Purchased Cars:\n");
+        String userInfo = "Name: " + getName() + "\n" +
+                "Address: " + getAddress() + "\n" +
+                "Contact Info: " + getContactInfo() + "\n" +
+                "Purchased Cars:\n";
 
         if (purchasedCars.isEmpty()) {
-            userInfo.append("No cars purchased yet.\n");
+            userInfo += "No cars purchased yet.\n";
         } else {
             for (Car car : purchasedCars) {
-                userInfo.append(car.displayCarInfo()).append("\n\n");
+                userInfo += car.displayCarInfo() + "\n\n";
             }
         }
 
-        return userInfo.toString();
+        return userInfo;
     }
+
 
 }

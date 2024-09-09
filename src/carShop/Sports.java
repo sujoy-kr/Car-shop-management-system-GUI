@@ -9,9 +9,9 @@ public class Sports extends Car {
     public Sports(String makeParam, String modelParam, int yearParam, int priceParam,
                   int horsepowerParam, int topSpeedParam, double acceleration0to60Param) {
         super(makeParam, modelParam, yearParam, priceParam);
-        this.horsepower = horsepowerParam;
-        this.topSpeed = topSpeedParam;
-        this.acceleration0to60 = acceleration0to60Param;
+        horsepower = horsepowerParam;
+        topSpeed = topSpeedParam;
+        acceleration0to60 = acceleration0to60Param;
     }
 
     public int getHorsepower() {
@@ -41,12 +41,5 @@ public class Sports extends Car {
                 "Top Speed: " + getTopSpeed() + " KM/H | " +
                 "0-60 KM/H Acceleration: " + getAcceleration0to60() + " seconds | " +
                 "Is Hyper Car: " + (isHyperCar() ? "Yes" : "No");
-    }
-
-
-    @Override
-    public double calculateResaleValue(int years) {
-        double depreciationRate = 0.1; // because sports cars in general are kept well maintained
-        return getPrice() * Math.pow(1 - depreciationRate, years);
     }
 }

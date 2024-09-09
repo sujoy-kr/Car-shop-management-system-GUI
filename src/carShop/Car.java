@@ -30,14 +30,5 @@ public abstract class Car {
         return price;
     }
 
-    public void setPrice(int price) {
-        this.price = price;
-    }
-    
-    public double calculateResaleValue(int years) {
-        double depreciationRate = 0.15;
-        return getPrice() * Math.pow(1 - depreciationRate, years);
-    }
-
     public abstract String displayCarInfo();
 }

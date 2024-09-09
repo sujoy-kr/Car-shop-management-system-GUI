@@ -1,4 +1,3 @@
-// Existing imports
 package carShop;
 
 import javax.swing.*;
@@ -64,16 +63,16 @@ public class Main {
         commuterCarPanel.add(commuterMakeInput);
         commuterCarPanel.add(new JLabel("Car Model:"));
         commuterCarPanel.add(commuterModelInput);
-        commuterCarPanel.add(new JLabel("Car Year:"));
+        commuterCarPanel.add(new JLabel("Car Year: //int"));
         commuterCarPanel.add(commuterYearInput);
-        commuterCarPanel.add(new JLabel("Car Price:"));
+        commuterCarPanel.add(new JLabel("Car Price: //int"));
         commuterCarPanel.add(commuterPriceInput);
 
-        commuterCarPanel.add(new JLabel("Fuel Efficiency (mpg):"));
+        commuterCarPanel.add(new JLabel("Fuel Efficiency (mpg): //double"));
         commuterCarPanel.add(fuelEfficiencyInput);
-        commuterCarPanel.add(new JLabel("Seating Capacity:"));
+        commuterCarPanel.add(new JLabel("Seating Capacity: //int"));
         commuterCarPanel.add(seatingCapacityInput);
-        commuterCarPanel.add(new JLabel("Trunk Space (cubic ft):"));
+        commuterCarPanel.add(new JLabel("Trunk Space (cubic ft): //double"));
         commuterCarPanel.add(trunkSpaceInput);
 
         JButton addCommuterCarButton = new JButton("Add Commuter Car");
@@ -88,16 +87,16 @@ public class Main {
         sportsCarPanel.add(sportsMakeInput);
         sportsCarPanel.add(new JLabel("Car Model:"));
         sportsCarPanel.add(sportsModelInput);
-        sportsCarPanel.add(new JLabel("Car Year:"));
+        sportsCarPanel.add(new JLabel("Car Year: //int"));
         sportsCarPanel.add(sportsYearInput);
-        sportsCarPanel.add(new JLabel("Car Price:"));
+        sportsCarPanel.add(new JLabel("Car Price: //int"));
         sportsCarPanel.add(sportsPriceInput);
 
-        sportsCarPanel.add(new JLabel("Horsepower (hp):"));
+        sportsCarPanel.add(new JLabel("Horsepower (hp): //int"));
         sportsCarPanel.add(horsepowerInput);
-        sportsCarPanel.add(new JLabel("Top Speed (mph):"));
+        sportsCarPanel.add(new JLabel("Top Speed (mph): //int"));
         sportsCarPanel.add(topSpeedInput);
-        sportsCarPanel.add(new JLabel("Acceleration (0-60 mph):"));
+        sportsCarPanel.add(new JLabel("Acceleration (0-60 mph): //double"));
         sportsCarPanel.add(accelerationInput);
 
         JButton addSportsCarButton = new JButton("Add Sports Car");
@@ -110,9 +109,9 @@ public class Main {
         // Add the tabbed pane to the admin panel
         adminPanel.add(tabbedPane);
 
-// Assuming adminPanel uses a BoxLayout or another layout that respects alignment
+        // Assuming adminPanel uses a BoxLayout or another layout that respects alignment
 
-// Text area to list added cars
+        // Text area to list added cars
         JTextArea carListArea = new JTextArea(10, 30);
         carListArea.setEditable(false);
         carListArea.setFont(new Font("Arial", Font.PLAIN, 14));
@@ -124,7 +123,7 @@ public class Main {
         adminPanel.add(carListLabel);
         adminPanel.add(scrollPane);
 
-// Text area to list user information
+        // Text area to list user information
         JTextArea userTextArea = new JTextArea(10, 30);
         userTextArea.setEditable(false);
         userTextArea.setFont(new Font("Arial", Font.PLAIN, 14));
@@ -253,7 +252,13 @@ public class Main {
 
                     shop.addCarToInventory(new Commuter(carMake, carModel, year, price, efficiency, capacity, trunk));
 
-                    carListArea.setText(shop.printAllCars());
+
+                    String carDetails = "";
+                    for (Car car : shop.getInventory()) {
+                        carDetails += car.displayCarInfo() + "\n\n";
+                    }
+                    carListArea.setText(carDetails);
+
 
                     JOptionPane.showMessageDialog(frame, "Commuter car added successfully!");
                 } catch (NumberFormatException nfe) {
@@ -295,7 +300,12 @@ public class Main {
 
                     shop.addCarToInventory(new Sports(carMake, carModel, year, price, hp, speed, accel));
 
-                    carListArea.setText(shop.printAllCars());
+                    String carDetails = "";
+                    for (Car car : shop.getInventory()) {
+                        carDetails += car.displayCarInfo() + "\n\n";
+                    }
+                    carListArea.setText(carDetails);
+
 
                     // Show success message
                     JOptionPane.showMessageDialog(frame, "Sports car added successfully!");
