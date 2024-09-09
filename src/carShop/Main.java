@@ -4,7 +4,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
 
 public class Main {
     public static void main(String[] args) {
@@ -12,11 +11,9 @@ public class Main {
         CarShop shop = new CarShop();
         Customer currentCustomer = new Customer();
 
-        ArrayList<String> cars = new ArrayList<>();
-
         // Create the main frame
         JFrame frame = new JFrame("Car Shop Management System");
-        frame.setSize(1200, 800);
+        frame.setSize(1200, 900);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         // Main panel using CardLayout
@@ -112,7 +109,7 @@ public class Main {
         // Assuming adminPanel uses a BoxLayout or another layout that respects alignment
 
         // Text area to list added cars
-        JTextArea carListArea = new JTextArea(10, 30);
+        JTextArea carListArea = new JTextArea(8, 30);
         carListArea.setEditable(false);
         carListArea.setFont(new Font("Arial", Font.PLAIN, 14));
         JScrollPane scrollPane = new JScrollPane(carListArea);
@@ -225,146 +222,134 @@ public class Main {
         });
 
         // Action listener for adding commuter cars
-        addCommuterCarButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    String carMake = commuterMakeInput.getText();
-                    String carModel = commuterModelInput.getText();
-                    String carYear = commuterYearInput.getText();
-                    String carPrice = commuterPriceInput.getText();
-                    String fuelEfficiency = fuelEfficiencyInput.getText();
-                    String seatingCapacity = seatingCapacityInput.getText();
-                    String trunkSpace = trunkSpaceInput.getText();
+        addCommuterCarButton.addActionListener(e -> {
+            try {
+                String carMake = commuterMakeInput.getText();
+                String carModel = commuterModelInput.getText();
+                String carYear = commuterYearInput.getText();
+                String carPrice = commuterPriceInput.getText();
+                String fuelEfficiency = fuelEfficiencyInput.getText();
+                String seatingCapacity = seatingCapacityInput.getText();
+                String trunkSpace = trunkSpaceInput.getText();
 
-                    // Ensure fields are not empty
-                    if (carMake.isEmpty() || carModel.isEmpty() || carYear.isEmpty() || carPrice.isEmpty() ||
-                            fuelEfficiency.isEmpty() || seatingCapacity.isEmpty() || trunkSpace.isEmpty()) {
-                        throw new IllegalArgumentException("Please fill out all fields!");
-                    }
-
-                    // Convert numeric fields to the appropriate types and handle NumberFormatException
-                    int year = Integer.parseInt(carYear); // Ensure valid integer year
-                    int price = Integer.parseInt(carPrice); // Ensure valid double price
-                    double efficiency = Double.parseDouble(fuelEfficiency); // Fuel efficiency should be a valid number
-                    int capacity = Integer.parseInt(seatingCapacity); // Seating capacity should be a valid integer
-                    double trunk = Double.parseDouble(trunkSpace); // Trunk space should be a valid double
-
-                    shop.addCarToInventory(new Commuter(carMake, carModel, year, price, efficiency, capacity, trunk));
-
-
-                    String carDetails = "";
-                    for (Car car : shop.getInventory()) {
-                        carDetails += car.displayCarInfo() + "\n\n";
-                    }
-                    carListArea.setText(carDetails);
-
-
-                    JOptionPane.showMessageDialog(frame, "Commuter car added successfully!");
-                } catch (NumberFormatException nfe) {
-                    // Handle invalid number formats (e.g., when parsing integers/doubles)
-                    JOptionPane.showMessageDialog(frame, "Please enter valid numbers for year, price, fuel efficiency, seating capacity, and trunk space!",
-                            "Input Error", JOptionPane.ERROR_MESSAGE);
-                } catch (IllegalArgumentException iae) {
-                    // Handle any empty field or other validation errors
-                    JOptionPane.showMessageDialog(frame, iae.getMessage(), "Input Error", JOptionPane.ERROR_MESSAGE);
+                // Ensure fields are not empty
+                if (carMake.isEmpty() || carModel.isEmpty() || carYear.isEmpty() || carPrice.isEmpty() ||
+                        fuelEfficiency.isEmpty() || seatingCapacity.isEmpty() || trunkSpace.isEmpty()) {
+                    throw new IllegalArgumentException("Please fill out all fields!");
                 }
+
+                // Convert numeric fields to the appropriate types and handle NumberFormatException
+                int year = Integer.parseInt(carYear); // Ensure valid integer year
+                int price = Integer.parseInt(carPrice); // Ensure valid double price
+                double efficiency = Double.parseDouble(fuelEfficiency); // Fuel efficiency should be a valid number
+                int capacity = Integer.parseInt(seatingCapacity); // Seating capacity should be a valid integer
+                double trunk = Double.parseDouble(trunkSpace); // Trunk space should be a valid double
+
+                shop.addCarToInventory(new Commuter(carMake, carModel, year, price, efficiency, capacity, trunk));
+
+
+                String carDetails = "";
+                for (Car car : shop.getInventory()) {
+                    carDetails += car.displayCarInfo() + "\n\n";
+                }
+                carListArea.setText(carDetails);
+
+
+                JOptionPane.showMessageDialog(frame, "Commuter car added successfully!");
+            } catch (NumberFormatException nfe) {
+                // Handle invalid number formats (e.g., when parsing integers/doubles)
+                JOptionPane.showMessageDialog(frame, "Please enter valid numbers for year, price, fuel efficiency, seating capacity, and trunk space!",
+                        "Input Error", JOptionPane.ERROR_MESSAGE);
+            } catch (IllegalArgumentException iae) {
+                // Handle any empty field or other validation errors
+                JOptionPane.showMessageDialog(frame, iae.getMessage(), "Input Error", JOptionPane.ERROR_MESSAGE);
             }
         });
 
         // Action listener for adding sports cars
-        addSportsCarButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    String carMake = sportsMakeInput.getText();
-                    String carModel = sportsModelInput.getText();
-                    String carYear = sportsYearInput.getText();
-                    String carPrice = sportsPriceInput.getText();
-                    String horsepower = horsepowerInput.getText();
-                    String topSpeed = topSpeedInput.getText();
-                    String acceleration = accelerationInput.getText();
+        addSportsCarButton.addActionListener(e -> {
+            try {
+                String carMake = sportsMakeInput.getText();
+                String carModel = sportsModelInput.getText();
+                String carYear = sportsYearInput.getText();
+                String carPrice = sportsPriceInput.getText();
+                String horsepower = horsepowerInput.getText();
+                String topSpeed = topSpeedInput.getText();
+                String acceleration = accelerationInput.getText();
 
-                    // Ensure fields are not empty
-                    if (carMake.isEmpty() || carModel.isEmpty() || carYear.isEmpty() || carPrice.isEmpty() ||
-                            horsepower.isEmpty() || topSpeed.isEmpty() || acceleration.isEmpty()) {
-                        throw new IllegalArgumentException("Please fill out all fields!");
-                    }
-
-                    // Convert numeric fields to the appropriate types and handle NumberFormatException
-                    int year = Integer.parseInt(carYear);
-                    int price = Integer.parseInt(carPrice);
-                    int hp = Integer.parseInt(horsepower);
-                    int speed = Integer.parseInt(topSpeed);
-                    double accel = Double.parseDouble(acceleration);
-
-                    shop.addCarToInventory(new Sports(carMake, carModel, year, price, hp, speed, accel));
-
-                    String carDetails = "";
-                    for (Car car : shop.getInventory()) {
-                        carDetails += car.displayCarInfo() + "\n\n";
-                    }
-                    carListArea.setText(carDetails);
-
-
-                    // Show success message
-                    JOptionPane.showMessageDialog(frame, "Sports car added successfully!");
-                } catch (NumberFormatException nfe) {
-                    // Handle invalid number formats (e.g., when parsing integers/doubles)
-                    JOptionPane.showMessageDialog(frame, "Please enter valid numbers for year, price, horsepower, top speed, and acceleration!",
-                            "Input Error", JOptionPane.ERROR_MESSAGE);
-                } catch (IllegalArgumentException iae) {
-                    // Handle any empty field or other validation errors
-                    JOptionPane.showMessageDialog(frame, iae.getMessage(), "Input Error", JOptionPane.ERROR_MESSAGE);
+                // Ensure fields are not empty
+                if (carMake.isEmpty() || carModel.isEmpty() || carYear.isEmpty() || carPrice.isEmpty() ||
+                        horsepower.isEmpty() || topSpeed.isEmpty() || acceleration.isEmpty()) {
+                    throw new IllegalArgumentException("Please fill out all fields!");
                 }
+
+                // Convert numeric fields to the appropriate types and handle NumberFormatException
+                int year = Integer.parseInt(carYear);
+                int price = Integer.parseInt(carPrice);
+                int hp = Integer.parseInt(horsepower);
+                int speed = Integer.parseInt(topSpeed);
+                double accel = Double.parseDouble(acceleration);
+
+                shop.addCarToInventory(new Sports(carMake, carModel, year, price, hp, speed, accel));
+
+                String carDetails = "";
+                for (Car car : shop.getInventory()) {
+                    carDetails += car.displayCarInfo() + "\n\n";
+                }
+                carListArea.setText(carDetails);
+
+
+                // Show success message
+                JOptionPane.showMessageDialog(frame, "Sports car added successfully!");
+            } catch (NumberFormatException nfe) {
+                // Handle invalid number formats (e.g., when parsing integers/doubles)
+                JOptionPane.showMessageDialog(frame, "Please enter valid numbers for year, price, horsepower, top speed, and acceleration!",
+                        "Input Error", JOptionPane.ERROR_MESSAGE);
+            } catch (IllegalArgumentException iae) {
+                // Handle any empty field or other validation errors
+                JOptionPane.showMessageDialog(frame, iae.getMessage(), "Input Error", JOptionPane.ERROR_MESSAGE);
             }
         });
 
         // Action listener for user sign up
-        signupButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String userName = userNameInput.getText();
-                String userAddress = userAddressInput.getText();
-                String userContact = userContactInput.getText();
+        signupButton.addActionListener(e -> {
+            String userName = userNameInput.getText();
+            String userAddress = userAddressInput.getText();
+            String userContact = userContactInput.getText();
 
-                if (!userName.isEmpty() && !userAddress.isEmpty() && !userContact.isEmpty()) {
-                    currentCustomer.setName(userName);
-                    currentCustomer.setAddress(userAddress);
-                    currentCustomer.setContactInfo(userContact);
+            if (!userName.isEmpty() && !userAddress.isEmpty() && !userContact.isEmpty()) {
+                currentCustomer.setName(userName);
+                currentCustomer.setAddress(userAddress);
+                currentCustomer.setContactInfo(userContact);
 
-                    userTextArea.setText(currentCustomer.getUserInfo());
+                userTextArea.setText(currentCustomer.getUserInfo());
 
-                    // Simulate sign-up success and switch to car listing panel
-                    cl.show(mainPanel, "userCarListPanel");
-                    userCarListPanel.removeAll();  // Clear previous components
+                // Simulate sign-up success and switch to car listing panel
+                cl.show(mainPanel, "userCarListPanel");
+                userCarListPanel.removeAll();  // Clear previous components
 
-                    // Show the list of cars with a "Buy" button next to each
-                    for (Car car : shop.getInventory()) {
-                        JPanel carPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-                        JLabel carLabel = new JLabel(car.displayCarInfo());
-                        JButton buyButton = new JButton("Buy");
+                // Show the list of cars with a "Buy" button next to each
+                for (Car car : shop.getInventory()) {
+                    JPanel carPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+                    JLabel carLabel = new JLabel(car.displayCarInfo());
+                    JButton buyButton = new JButton("Buy");
 
-                        // Add ActionListener for the Buy button
-                        buyButton.addActionListener(new ActionListener() {
-                            @Override
-                            public void actionPerformed(ActionEvent e) {
-                                currentCustomer.updatePurchasedCars(car);
-                                userTextArea.setText(currentCustomer.getUserInfo());
-                                JOptionPane.showMessageDialog(frame, "You bought: " + car.getMake() + " " + car.getModel());
-                            }
-                        });
+                    // Add ActionListener for the Buy button
+                    buyButton.addActionListener(e1 -> {
+                        currentCustomer.updatePurchasedCars(car);
+                        userTextArea.setText(currentCustomer.getUserInfo());
+                        JOptionPane.showMessageDialog(frame, "You bought: " + car.getMake() + " " + car.getModel());
+                    });
 
-                        carPanel.add(carLabel);
-                        carPanel.add(buyButton);
-                        userCarListPanel.add(carPanel);
-                    }
-
-                    userCarListPanel.revalidate();
-                    userCarListPanel.repaint();
-                } else {
-                    JOptionPane.showMessageDialog(frame, "Please fill out all fields!");
+                    carPanel.add(carLabel);
+                    carPanel.add(buyButton);
+                    userCarListPanel.add(carPanel);
                 }
+
+                userCarListPanel.revalidate();
+                userCarListPanel.repaint();
+            } else {
+                JOptionPane.showMessageDialog(frame, "Please fill out all fields!");
             }
         });
 

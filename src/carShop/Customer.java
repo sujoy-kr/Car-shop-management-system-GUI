@@ -6,31 +6,16 @@ public class Customer implements User {
     private String name;
     private String address;
     private String contactInfo;
-    private ArrayList<Car> purchasedCars;
+    private final ArrayList<Car> purchasedCars;
 
     public Customer() {
         name = null;
         address = null;
         contactInfo = null;
-        purchasedCars = new ArrayList<Car>();
+        purchasedCars = new ArrayList<>();
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public String getContactInfo() {
-        return contactInfo;
-    }
-
-    public ArrayList<Car> getPurchasedCars() {
-        return purchasedCars;
-    }
-
+    // setters
     public void setName(String nameParam) {
         name = nameParam;
     }
@@ -47,6 +32,20 @@ public class Customer implements User {
         purchasedCars.add(carToAdd);
     }
 
+    // getters
+    public String getName() {
+        return name;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public String getContactInfo() {
+        return contactInfo;
+    }
+
+    // polymorphism override
     @Override
     public String getUserInfo() {
         String userInfo = "Name: " + getName() + "\n" +
@@ -64,6 +63,4 @@ public class Customer implements User {
 
         return userInfo;
     }
-
-
 }

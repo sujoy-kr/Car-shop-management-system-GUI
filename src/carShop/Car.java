@@ -4,7 +4,7 @@ public abstract class Car {
     private final String make;
     private final String model;
     private final int year;
-    private int price;
+    private final int price;
 
     public Car(String makeParam, String modelParam, int yearParam, int priceParam) {
         make = makeParam;
@@ -30,5 +30,6 @@ public abstract class Car {
         return price;
     }
 
+    // abstract method
     public abstract String displayCarInfo();
 }

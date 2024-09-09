@@ -22,15 +22,15 @@ public class Sports extends Car {
         return topSpeed;
     }
 
-    public boolean isHyperCar() {
-        return topSpeed >= 400 && acceleration0to60 <= 3.0;
-    }
-
-
     public double getAcceleration0to60() {
         return acceleration0to60;
     }
 
+    public boolean isHyperCar() {
+        return topSpeed >= 400 && acceleration0to60 <= 3.0;
+    }
+
+    // polymorphism override
     @Override
     public String displayCarInfo() {
         return "Make: " + getMake() + " | " +

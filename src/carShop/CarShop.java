@@ -3,10 +3,10 @@ package carShop;
 import java.util.ArrayList;
 
 public class CarShop {
-    private ArrayList<Car> inventory;
+    private final ArrayList<Car> inventory;
 
     public CarShop() {
-        inventory = new ArrayList<Car>();
+        inventory = new ArrayList<>();
     }
 
     public void addCarToInventory(Car car) {

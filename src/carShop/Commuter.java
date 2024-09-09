@@ -29,6 +29,7 @@ public class Commuter extends Car {
         return seatingCapacity >= 5 && trunkSpace >= 15.0;
     }
 
+    // polymorphism override
     @Override
     public String displayCarInfo() {
         return "Make: " + getMake() + " | " +
