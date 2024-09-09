@@ -48,10 +48,10 @@ public class Customer implements User {
     // polymorphism override
     @Override
     public String getUserInfo() {
-        String userInfo = "Name: " + getName() + "\n" +
-                "Address: " + getAddress() + "\n" +
-                "Contact Info: " + getContactInfo() + "\n" +
-                "Purchased Cars:\n";
+        String userInfo = "Name: " + getName() + "\n\n" +
+                "Address: " + getAddress() + "\n\n" +
+                "Contact Info: " + getContactInfo() + "\n\n" +
+                "Purchased Cars:\n\n";
 
         if (purchasedCars.isEmpty()) {
             userInfo += "No cars purchased yet.\n";
