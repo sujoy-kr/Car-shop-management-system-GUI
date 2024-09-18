@@ -14,6 +14,7 @@ public class Sports extends Car {
         acceleration0to60 = acceleration0to60Param;
     }
 
+    // getters
     public int getHorsepower() {
         return horsepower;
     }

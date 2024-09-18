@@ -6,7 +6,7 @@ public class Customer implements User {
     private String name;
     private String address;
     private String contactInfo;
-    private final ArrayList<Car> purchasedCars;
+    private ArrayList<Car> purchasedCars;
 
     public Customer() {
         name = null;
@@ -26,6 +26,10 @@ public class Customer implements User {
 
     public void setContactInfo(String contactInfoParam) {
         contactInfo = contactInfoParam;
+    }
+
+    public void setPurchasedCarsEmpty() {
+        purchasedCars = new ArrayList<>();
     }
 
     public void updatePurchasedCars(Car carToAdd) {

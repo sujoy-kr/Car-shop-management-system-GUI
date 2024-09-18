@@ -13,6 +13,7 @@ public class Commuter extends Car {
         trunkSpace = trunkSpaceParam;
     }
 
+    // getters
     public double getFuelEfficiency() {
         return fuelEfficiency;
     }

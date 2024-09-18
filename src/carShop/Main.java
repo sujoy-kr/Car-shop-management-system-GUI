@@ -37,7 +37,6 @@ public class Main {
         JPanel commuterCarPanel = new JPanel();
         commuterCarPanel.setLayout(new BoxLayout(commuterCarPanel, BoxLayout.Y_AXIS));
 
-
         // Commuter Car Specific Inputs
         JTextField commuterMakeInput = new JTextField(20);
         JTextField commuterModelInput = new JTextField(20);
@@ -313,6 +312,11 @@ public class Main {
             String userContact = userContactInput.getText();
 
             if (!userName.isEmpty() && !userAddress.isEmpty() && !userContact.isEmpty()) {
+
+                if (currentCustomer.getName() != null && !currentCustomer.getName().equalsIgnoreCase(userName)) {
+                    currentCustomer.setPurchasedCarsEmpty();
+                }
+
                 currentCustomer.setName(userName);
                 currentCustomer.setAddress(userAddress);
                 currentCustomer.setContactInfo(userContact);
@@ -355,7 +359,6 @@ public class Main {
                         userCarListPanel.add(carPanel);
                     }
                 }
-
 
                 userCarListPanel.revalidate();
                 userCarListPanel.repaint();
