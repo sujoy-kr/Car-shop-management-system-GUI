@@ -53,7 +53,7 @@ public class Main {
         commuterCarPanel.add(commuterModelInput);
         commuterCarPanel.add(new JLabel("Car Year: int"));
         commuterCarPanel.add(commuterYearInput);
-        commuterCarPanel.add(new JLabel("Car Price: int"));
+        commuterCarPanel.add(new JLabel("Car Price (taka): int"));
         commuterCarPanel.add(commuterPriceInput);
 
         commuterCarPanel.add(new JLabel("Fuel Efficiency (kmpl): double"));
@@ -86,14 +86,14 @@ public class Main {
         sportsCarPanel.add(sportsModelInput);
         sportsCarPanel.add(new JLabel("Car Year: int"));
         sportsCarPanel.add(sportsYearInput);
-        sportsCarPanel.add(new JLabel("Car Price: int"));
+        sportsCarPanel.add(new JLabel("Car Price (taka): int"));
         sportsCarPanel.add(sportsPriceInput);
 
         sportsCarPanel.add(new JLabel("Horsepower (hp): int"));
         sportsCarPanel.add(horsepowerInput);
         sportsCarPanel.add(new JLabel("Top Speed (kmph): int"));
         sportsCarPanel.add(topSpeedInput);
-        sportsCarPanel.add(new JLabel("Acceleration in seconds (0-60 kmph): double"));
+        sportsCarPanel.add(new JLabel("Acceleration 0-60 kmph (seconds): double"));
         sportsCarPanel.add(accelerationInput);
 
         JButton addSportsCarButton = new JButton("Add Sports Car");

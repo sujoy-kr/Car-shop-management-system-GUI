@@ -36,7 +36,7 @@ public class Commuter extends Car {
         return "Make: " + getMake() + " | " +
                 "Model: " + getModel() + " | " +
                 "Year: " + getYear() + " | " +
-                "Price: $" + getPrice() + " | " +
+                "Price: " + getPrice() + " Taka | " +
                 "Fuel Efficiency: " + getFuelEfficiency() + " KMPL | " +
                 "Seating Capacity: " + getSeatingCapacity() + " persons | " +
                 "Trunk Space: " + getTrunkSpace() + " cubic feet | " +

@@ -37,7 +37,7 @@ public class Sports extends Car {
         return "Make: " + getMake() + " | " +
                 "Model: " + getModel() + " | " +
                 "Year: " + getYear() + " | " +
-                "Price: $" + getPrice() + " | " +
+                "Price: " + getPrice() + " Taka | " +
                 "Horsepower: " + getHorsepower() + " HP | " +
                 "Top Speed: " + getTopSpeed() + " KM/H | " +
                 "0-60 KM/H Acceleration: " + getAcceleration0to60() + " seconds | " +
