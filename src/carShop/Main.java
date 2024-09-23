@@ -93,7 +93,7 @@ public class Main {
         sportsCarPanel.add(horsepowerInput);
         sportsCarPanel.add(new JLabel("Top Speed (kmph): int"));
         sportsCarPanel.add(topSpeedInput);
-        sportsCarPanel.add(new JLabel("Acceleration (0-60 kmph): double"));
+        sportsCarPanel.add(new JLabel("Acceleration in seconds (0-60 kmph): double"));
         sportsCarPanel.add(accelerationInput);
 
         JButton addSportsCarButton = new JButton("Add Sports Car");
