@@ -2,6 +2,8 @@ package carShop.inventory;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.ArrayList;
@@ -9,6 +11,7 @@ import java.util.ArrayList;
 import carShop.vehicles.Car;
 import carShop.vehicles.Commuter;
 import carShop.vehicles.Sports;
+import carShop.users.Customer;
 
 public class CarShopTest {
 
@@ -82,5 +85,51 @@ public class CarShopTest {
         assertEquals(0.0, emptyShop.getAveragePrice());
         assertNull(emptyShop.getMostExpensiveCar());
         assertNull(emptyShop.getCheapestCar());
+    }
+
+    // 1. Exception / Negative Testing
+    @Test
+    public void testNegativeCarPriceThrowsException() {
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+            new Commuter("Toyota", "Corolla", 2020, -5000, 15.0, 5, 470.0);
+        });
+        
+        assertEquals("Price cannot be negative", exception.getMessage());
+    }
+
+    // 2. Integration Testing
+    @Test
+    public void testCustomerPurchasingFlow() {
+        CarShop localShop = new CarShop();
+        Customer customer = new Customer();
+        Commuter car = new Commuter("Toyota", "Corolla", 2020, 2500000, 15.0, 5, 470.0);
+        
+        localShop.addCarToInventory(car);
+        
+        localShop.removeCar(car);
+        customer.updatePurchasedCars(car);
+        
+        assertEquals(0, localShop.getInventory().size(), "Shop inventory should be empty");
+        assertEquals(2500000, customer.getTotalSpent(), "Customer should have spent the car's price");
+    }
+
+    // 3. Parameterized Testing
+    @ParameterizedTest
+    @ValueSource(strings = {"Toyota", "TOYOTA", "toyota", "tOyOtA"})
+    public void testFindCarsByMakeIsCaseInsensitive(String searchMake) {
+        CarShop localShop = new CarShop();
+        localShop.addCarToInventory(new Commuter("Toyota", "Corolla", 2020, 2500000, 15.0, 5, 470.0));
+        
+        assertEquals(1, localShop.findCarsByMake(searchMake).size(), "Should find the Toyota regardless of case.");
+    }
+
+    // 4. Boundary Value Testing
+    @Test
+    public void testSearchWithEmptyOrNullMake() {
+        CarShop localShop = new CarShop();
+        localShop.addCarToInventory(new Commuter("Toyota", "Corolla", 2020, 2500000, 15.0, 5, 470.0));
+        
+        assertTrue(localShop.findCarsByMake("").isEmpty(), "Searching by empty string should return empty list");
+        assertTrue(localShop.findCarsByMake(null).isEmpty(), "Searching by null should return empty list");
     }
 }

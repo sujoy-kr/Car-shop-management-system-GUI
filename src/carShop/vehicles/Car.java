@@ -7,6 +7,9 @@ public abstract class Car {
     private final int price;
 
     public Car(String makeParam, String modelParam, int yearParam, int priceParam) {
+        if (priceParam < 0) {
+            throw new IllegalArgumentException("Price cannot be negative");
+        }
         make = makeParam;
         model = modelParam;
         year = yearParam;
