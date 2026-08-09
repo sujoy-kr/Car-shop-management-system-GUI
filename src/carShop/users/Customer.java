@@ -1,6 +1,7 @@
-package carShop;
+package carShop.users;
 
 import java.util.ArrayList;
+import carShop.vehicles.Car;
 
 public class Customer implements User {
     private String name;
@@ -49,12 +50,62 @@ public class Customer implements User {
         return contactInfo;
     }
 
+    // Methods for JUnit testing
+    public ArrayList<Car> getPurchasedCars() {
+        return purchasedCars;
+    }
+    
+    public int getTotalSpent() {
+        int total = 0;
+        for (Car car : purchasedCars) {
+            total += car.getPrice();
+        }
+        return total;
+    }
+
+    public boolean isVIP() {
+        return getTotalSpent() >= 5000000;
+    }
+    
+    public Car getMostExpensivePurchase() {
+        if (purchasedCars.isEmpty()) return null;
+        Car maxCar = purchasedCars.get(0);
+        for (Car car : purchasedCars) {
+            if (car.getPrice() > maxCar.getPrice()) {
+                maxCar = car;
+            }
+        }
+        return maxCar;
+    }
+    
+    public boolean hasBoughtMake(String make) {
+        if (make == null) return false;
+        for (Car car : purchasedCars) {
+            if (car.getMake().equalsIgnoreCase(make)) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    public int getPurchaseCountByYear(int year) {
+        int count = 0;
+        for (Car car : purchasedCars) {
+            if (car.getYear() == year) {
+                count++;
+            }
+        }
+        return count;
+    }
+
     // polymorphism override
     @Override
     public String getUserInfo() {
         String userInfo = "Name: " + getName() + "\n\n" +
                 "Address: " + getAddress() + "\n\n" +
                 "Contact Info: " + getContactInfo() + "\n\n" +
+                "VIP Status: " + (isVIP() ? "Yes" : "No") + "\n\n" +
+                "Total Spent: " + getTotalSpent() + " Taka\n\n" +
                 "Purchased Cars:\n\n";
 
         if (purchasedCars.isEmpty()) {

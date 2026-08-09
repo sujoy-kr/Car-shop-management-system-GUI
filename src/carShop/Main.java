@@ -1,372 +1,557 @@
 package carShop;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.List;
+
+import carShop.inventory.CarShop;
+import carShop.users.Customer;
+import carShop.vehicles.Car;
+import carShop.vehicles.Commuter;
+import carShop.vehicles.Sports;
 
 public class Main {
+
+    // Define UI Constants
+    private static final Font TITLE_FONT = new Font("Segoe UI", Font.BOLD, 28);
+    private static final Font LABEL_FONT = new Font("Segoe UI", Font.BOLD, 14);
+    private static final Font INPUT_FONT = new Font("Segoe UI", Font.PLAIN, 14);
+    private static final Font BUTTON_FONT = new Font("Segoe UI", Font.BOLD, 14);
+    private static final Color PRIMARY_COLOR = new Color(41, 128, 185); // Blue
+    private static final Color SUCCESS_COLOR = new Color(39, 174, 96); // Green
+    private static final Color DANGER_COLOR = new Color(231, 76, 60); // Red
+    private static final Color TEXT_COLOR = new Color(44, 62, 80);
+    private static final Color BG_COLOR = new Color(245, 247, 250);
+
+    // Session State
+    private static boolean isUserLoggedIn = false;
+    private static Customer currentCustomer = null;
+    private static final List<Customer> allCustomers = new ArrayList<>();
+
     public static void main(String[] args) {
 
+        // Set Nimbus Look and Feel for a modern look
+        try {
+            for (UIManager.LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (Exception e) {
+            // Fallback to default if Nimbus is unavailable
+        }
+
         CarShop shop = new CarShop();
-        Customer currentCustomer = new Customer();
+        
+        // Add default cars (Seed Data)
+        shop.addCarToInventory(new Commuter("Toyota", "Corolla", 2020, 2500000, 15.0, 5, 470.0));
+        shop.addCarToInventory(new Commuter("Honda", "Civic", 2021, 2800000, 14.5, 5, 450.0));
+        shop.addCarToInventory(new Sports("Porsche", "911", 2022, 15000000, 450, 310, 3.2));
+        shop.addCarToInventory(new Sports("Ferrari", "F8 Tributo", 2023, 35000000, 710, 340, 2.9));
 
         // Create the main frame
         JFrame frame = new JFrame("Car Shop Management System");
         frame.setSize(1200, 900);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.getContentPane().setBackground(BG_COLOR);
 
         // Main panel using CardLayout
         JPanel mainPanel = new JPanel(new CardLayout());
+        mainPanel.setBackground(BG_COLOR);
 
-        // Admin Panel Components
-        JPanel adminPanel = new JPanel();
-        adminPanel.setLayout(new BoxLayout(adminPanel, BoxLayout.Y_AXIS));
-        adminPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20)); // Add padding
+        // ================= ADMIN PANEL =================
+        JPanel adminPanel = new JPanel(new BorderLayout(0, 20));
+        adminPanel.setBorder(new EmptyBorder(30, 40, 30, 40));
+        adminPanel.setBackground(BG_COLOR);
 
-        // add admin panel title
-        JLabel adminTitle = new JLabel("Admin Panel");
-        adminTitle.setFont(new Font("Arial", Font.BOLD, 24));
-        adminTitle.setAlignmentX(Component.CENTER_ALIGNMENT);
-        adminPanel.add(adminTitle);
+        JLabel adminTitle = new JLabel("Admin Dashboard");
+        adminTitle.setFont(TITLE_FONT);
+        adminTitle.setForeground(TEXT_COLOR);
+        adminTitle.setHorizontalAlignment(SwingConstants.CENTER);
+        adminPanel.add(adminTitle, BorderLayout.NORTH);
+        
+        JPanel splitPanel = new JPanel(new GridLayout(1, 2, 30, 0));
+        splitPanel.setBackground(BG_COLOR);
 
-        // Tabs for different car types
+        JPanel leftPanel = new JPanel(new BorderLayout());
+        leftPanel.setBackground(BG_COLOR);
+
+        JPanel rightPanel = new JPanel();
+        rightPanel.setLayout(new BoxLayout(rightPanel, BoxLayout.Y_AXIS));
+        rightPanel.setBackground(BG_COLOR);
+
         JTabbedPane tabbedPane = new JTabbedPane();
+        tabbedPane.setFont(LABEL_FONT);
 
-        // Commuter Car Panel
-        JPanel commuterCarPanel = new JPanel();
-        commuterCarPanel.setLayout(new BoxLayout(commuterCarPanel, BoxLayout.Y_AXIS));
+        // --- Commuter Car Panel ---
+        JPanel commuterCarPanel = new JPanel(new GridLayout(8, 2, 10, 10));
+        commuterCarPanel.setBorder(new EmptyBorder(20, 20, 20, 20));
+        commuterCarPanel.setBackground(Color.WHITE);
 
-        // Commuter Car Specific Inputs
-        JTextField commuterMakeInput = new JTextField(20);
-        JTextField commuterModelInput = new JTextField(20);
-        JTextField commuterYearInput = new JTextField(20);
-        JTextField commuterPriceInput = new JTextField(20);
-        JTextField fuelEfficiencyInput = new JTextField(20);
-        JTextField seatingCapacityInput = new JTextField(20);
-        JTextField trunkSpaceInput = new JTextField(20);
+        JTextField commuterMakeInput = createStyledTextField();
+        JTextField commuterModelInput = createStyledTextField();
+        JTextField commuterYearInput = createStyledTextField();
+        JTextField commuterPriceInput = createStyledTextField();
+        JTextField fuelEfficiencyInput = createStyledTextField();
+        JTextField seatingCapacityInput = createStyledTextField();
+        JTextField trunkSpaceInput = createStyledTextField();
 
-        // Add fields to commuterCarPanel
-        commuterCarPanel.add(new JLabel("Car Make:"));
-        commuterCarPanel.add(commuterMakeInput);
-        commuterCarPanel.add(new JLabel("Car Model:"));
-        commuterCarPanel.add(commuterModelInput);
-        commuterCarPanel.add(new JLabel("Car Year: int"));
-        commuterCarPanel.add(commuterYearInput);
-        commuterCarPanel.add(new JLabel("Car Price (taka): int"));
-        commuterCarPanel.add(commuterPriceInput);
+        addFormRow(commuterCarPanel, "Car Make:", commuterMakeInput);
+        addFormRow(commuterCarPanel, "Car Model:", commuterModelInput);
+        addFormRow(commuterCarPanel, "Car Year:", commuterYearInput);
+        addFormRow(commuterCarPanel, "Car Price (Taka):", commuterPriceInput);
+        addFormRow(commuterCarPanel, "Fuel Efficiency (KMPL):", fuelEfficiencyInput);
+        addFormRow(commuterCarPanel, "Seating Capacity:", seatingCapacityInput);
+        addFormRow(commuterCarPanel, "Trunk Space (Liters):", trunkSpaceInput);
 
-        commuterCarPanel.add(new JLabel("Fuel Efficiency (kmpl): double"));
-        commuterCarPanel.add(fuelEfficiencyInput);
-        commuterCarPanel.add(new JLabel("Seating Capacity: int"));
-        commuterCarPanel.add(seatingCapacityInput);
-        commuterCarPanel.add(new JLabel("Trunk Space (liters): double"));
-        commuterCarPanel.add(trunkSpaceInput);
-
-        JButton addCommuterCarButton = new JButton("Add Commuter Car");
+        JButton addCommuterCarButton = createStyledButton("Add Commuter Car", PRIMARY_COLOR);
+        commuterCarPanel.add(new JLabel()); // empty cell
         commuterCarPanel.add(addCommuterCarButton);
 
-        // Sports Car Panel
-        JPanel sportsCarPanel = new JPanel();
-        sportsCarPanel.setLayout(new BoxLayout(sportsCarPanel, BoxLayout.Y_AXIS));
+        // --- Sports Car Panel ---
+        JPanel sportsCarPanel = new JPanel(new GridLayout(8, 2, 10, 10));
+        sportsCarPanel.setBorder(new EmptyBorder(20, 20, 20, 20));
+        sportsCarPanel.setBackground(Color.WHITE);
 
-        // Sports Car Specific Inputs
-        JTextField sportsMakeInput = new JTextField(20);
-        JTextField sportsModelInput = new JTextField(20);
-        JTextField sportsYearInput = new JTextField(20);
-        JTextField sportsPriceInput = new JTextField(20);
-        JTextField horsepowerInput = new JTextField(20);
-        JTextField topSpeedInput = new JTextField(20);
-        JTextField accelerationInput = new JTextField(20);
+        JTextField sportsMakeInput = createStyledTextField();
+        JTextField sportsModelInput = createStyledTextField();
+        JTextField sportsYearInput = createStyledTextField();
+        JTextField sportsPriceInput = createStyledTextField();
+        JTextField horsepowerInput = createStyledTextField();
+        JTextField topSpeedInput = createStyledTextField();
+        JTextField accelerationInput = createStyledTextField();
 
-        // Add fields to sportsCarPanel
-        sportsCarPanel.add(new JLabel("Car Make:"));
-        sportsCarPanel.add(sportsMakeInput);
-        sportsCarPanel.add(new JLabel("Car Model:"));
-        sportsCarPanel.add(sportsModelInput);
-        sportsCarPanel.add(new JLabel("Car Year: int"));
-        sportsCarPanel.add(sportsYearInput);
-        sportsCarPanel.add(new JLabel("Car Price (taka): int"));
-        sportsCarPanel.add(sportsPriceInput);
+        addFormRow(sportsCarPanel, "Car Make:", sportsMakeInput);
+        addFormRow(sportsCarPanel, "Car Model:", sportsModelInput);
+        addFormRow(sportsCarPanel, "Car Year:", sportsYearInput);
+        addFormRow(sportsCarPanel, "Car Price (Taka):", sportsPriceInput);
+        addFormRow(sportsCarPanel, "Horsepower (HP):", horsepowerInput);
+        addFormRow(sportsCarPanel, "Top Speed (KMPH):", topSpeedInput);
+        addFormRow(sportsCarPanel, "0-60 KMPH (Seconds):", accelerationInput);
 
-        sportsCarPanel.add(new JLabel("Horsepower (hp): int"));
-        sportsCarPanel.add(horsepowerInput);
-        sportsCarPanel.add(new JLabel("Top Speed (kmph): int"));
-        sportsCarPanel.add(topSpeedInput);
-        sportsCarPanel.add(new JLabel("Acceleration 0-60 kmph (seconds): double"));
-        sportsCarPanel.add(accelerationInput);
-
-        JButton addSportsCarButton = new JButton("Add Sports Car");
+        JButton addSportsCarButton = createStyledButton("Add Sports Car", PRIMARY_COLOR);
+        sportsCarPanel.add(new JLabel()); // empty cell
         sportsCarPanel.add(addSportsCarButton);
 
-        // Add both car panels to the tabbed pane
         tabbedPane.addTab("Add Commuter Car", commuterCarPanel);
         tabbedPane.addTab("Add Sports Car", sportsCarPanel);
+        
+        leftPanel.add(tabbedPane, BorderLayout.CENTER);
+        splitPanel.add(leftPanel);
 
-        // Add the tabbed pane to the admin panel
-        adminPanel.add(tabbedPane);
+        // Output text areas in the right panel
 
-        // Text area to list added cars
+        JTextArea shopStatsArea = new JTextArea(4, 30);
+        styleTextArea(shopStatsArea);
+        JScrollPane scrollPaneStats = new JScrollPane(shopStatsArea);
+        JLabel shopStatsLabel = new JLabel("Shop Statistics:");
+        shopStatsLabel.setFont(LABEL_FONT);
+        shopStatsLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        rightPanel.add(shopStatsLabel);
+        rightPanel.add(Box.createRigidArea(new Dimension(0, 5)));
+        rightPanel.add(scrollPaneStats);
+        
+        rightPanel.add(Box.createRigidArea(new Dimension(0, 20)));
+
         JTextArea carListArea = new JTextArea(8, 30);
-        carListArea.setEditable(false);
-        carListArea.setFont(new Font("Arial", Font.PLAIN, 16));
+        styleTextArea(carListArea);
         JScrollPane scrollPane = new JScrollPane(carListArea);
-        scrollPane.setAlignmentX(Component.CENTER_ALIGNMENT);
-        adminPanel.add(Box.createRigidArea(new Dimension(0, 20))); // Add spacing
-        JLabel carListLabel = new JLabel("Car List:");
-        carListLabel.setAlignmentX(Component.CENTER_ALIGNMENT);  // Center align the label
-        adminPanel.add(carListLabel);
-        adminPanel.add(scrollPane);
+        JLabel carListLabel = new JLabel("Current Inventory:");
+        carListLabel.setFont(LABEL_FONT);
+        carListLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        rightPanel.add(carListLabel);
+        rightPanel.add(Box.createRigidArea(new Dimension(0, 5)));
+        rightPanel.add(scrollPane);
 
-        // Text area to list user information
-        JTextArea userTextArea = new JTextArea(10, 30);
-        userTextArea.setEditable(false);
-        userTextArea.setFont(new Font("Arial", Font.PLAIN, 16));
+        rightPanel.add(Box.createRigidArea(new Dimension(0, 20)));
+
+        JTextArea userTextArea = new JTextArea(8, 30);
+        styleTextArea(userTextArea);
         JScrollPane scrollPaneUser = new JScrollPane(userTextArea);
-        scrollPaneUser.setAlignmentX(Component.CENTER_ALIGNMENT);
-        adminPanel.add(Box.createRigidArea(new Dimension(0, 20))); // Add spacing
-        JLabel userInfoLabel = new JLabel("User Info:");
-        userInfoLabel.setAlignmentX(Component.CENTER_ALIGNMENT);  // Center align the label
-        adminPanel.add(userInfoLabel);
-        adminPanel.add(scrollPaneUser);
+        JLabel userInfoLabel = new JLabel("Global User Logs:");
+        userInfoLabel.setFont(LABEL_FONT);
+        userInfoLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        rightPanel.add(userInfoLabel);
+        rightPanel.add(Box.createRigidArea(new Dimension(0, 5)));
+        rightPanel.add(scrollPaneUser);
 
-        // User Signup Panel
+        splitPanel.add(rightPanel);
+        adminPanel.add(splitPanel, BorderLayout.CENTER);
+
+        // Pre-fill areas
+        updateShopStatsArea(shop, shopStatsArea);
+        updateCarListArea(shop, carListArea);
+        updateAdminUserLog(userTextArea);
+
+        // ================= USER SIGNUP PANEL =================
         JPanel userSignupPanel = new JPanel();
         userSignupPanel.setLayout(new BoxLayout(userSignupPanel, BoxLayout.Y_AXIS));
-        userSignupPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20)); // Add padding
+        userSignupPanel.setBorder(new EmptyBorder(50, 200, 50, 200)); 
+        userSignupPanel.setBackground(BG_COLOR);
 
-        // user signup big title
-        JLabel userSignupTitle = new JLabel("User Signup");
-        userSignupTitle.setFont(new Font("Arial", Font.BOLD, 24));
+        JLabel userSignupTitle = new JLabel("Create Your Profile");
+        userSignupTitle.setFont(TITLE_FONT);
+        userSignupTitle.setForeground(TEXT_COLOR);
         userSignupTitle.setAlignmentX(Component.CENTER_ALIGNMENT);
-
-        JTextField userNameInput = new JTextField(20);
-        JTextField userAddressInput = new JTextField(20);
-        JTextField userContactInput = new JTextField(20);
-        JButton signupButton = new JButton("Sign Up");
-
-        userNameInput.setMaximumSize(new Dimension(400, 30));
-        userAddressInput.setMaximumSize(new Dimension(400, 30));
-        userContactInput.setMaximumSize(new Dimension(400, 30));
-
         userSignupPanel.add(userSignupTitle);
-        userSignupPanel.add(Box.createRigidArea(new Dimension(0, 20))); // Add spacing
+        userSignupPanel.add(Box.createRigidArea(new Dimension(0, 40)));
 
-        // signup form input
-        JLabel userNameLabel = new JLabel("Name:");
-        userNameLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        userSignupPanel.add(userNameLabel);
-        userNameInput.setAlignmentX(Component.CENTER_ALIGNMENT);
-        userSignupPanel.add(userNameInput);
+        JPanel signupFormPanel = new JPanel(new GridLayout(3, 2, 15, 20));
+        signupFormPanel.setBackground(BG_COLOR);
+        signupFormPanel.setMaximumSize(new Dimension(600, 150));
 
-        userSignupPanel.add(Box.createRigidArea(new Dimension(0, 10))); // Add spacing
+        JTextField userNameInput = createStyledTextField();
+        JTextField userAddressInput = createStyledTextField();
+        JTextField userContactInput = createStyledTextField();
 
-        // signup form input
-        JLabel userAddressLabel = new JLabel("Address:");
-        userAddressLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        userSignupPanel.add(userAddressLabel);
-        userAddressInput.setAlignmentX(Component.CENTER_ALIGNMENT);
-        userSignupPanel.add(userAddressInput);
+        addFormRow(signupFormPanel, "Full Name:", userNameInput);
+        addFormRow(signupFormPanel, "Delivery Address:", userAddressInput);
+        addFormRow(signupFormPanel, "Contact Number:", userContactInput);
 
-        userSignupPanel.add(Box.createRigidArea(new Dimension(0, 10))); // Add spacing
+        userSignupPanel.add(signupFormPanel);
+        userSignupPanel.add(Box.createRigidArea(new Dimension(0, 30)));
 
-        // signup form input
-        JLabel userContactLabel = new JLabel("Contact Info:");
-        userContactLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        userSignupPanel.add(userContactLabel);
-        userContactInput.setAlignmentX(Component.CENTER_ALIGNMENT);
-        userSignupPanel.add(userContactInput);
-
-        // signup form submit button
-        userSignupPanel.add(Box.createRigidArea(new Dimension(0, 20))); // Add spacing
+        JButton signupButton = createStyledButton("Sign Up & Enter Shop", SUCCESS_COLOR);
         signupButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         userSignupPanel.add(signupButton);
 
-        // User Car Listing Panel
+        // ================= USER CAR LISTING PANEL =================
+        JPanel userCarListWrapper = new JPanel(new BorderLayout());
+        userCarListWrapper.setBackground(BG_COLOR);
+        
         JPanel userCarListPanel = new JPanel();
         userCarListPanel.setLayout(new BoxLayout(userCarListPanel, BoxLayout.Y_AXIS));
-        userCarListPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20)); // Add padding
+        userCarListPanel.setBorder(new EmptyBorder(20, 40, 20, 40));
+        userCarListPanel.setBackground(BG_COLOR);
+        
+        JScrollPane carListScrollPane = new JScrollPane(userCarListPanel);
+        carListScrollPane.setBorder(null);
+        userCarListWrapper.add(carListScrollPane, BorderLayout.CENTER);
 
         // Add panels to the main panel
         mainPanel.add(adminPanel, "adminPanel");
         mainPanel.add(userSignupPanel, "userSignupPanel");
-        mainPanel.add(userCarListPanel, "userCarListPanel");
+        mainPanel.add(userCarListWrapper, "userCarListPanel");
 
-        // Layout for the button to switch between admin and user panels
-        JPanel controlPanel = new JPanel();
-        controlPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10)); // Add padding
-        JButton toggleButton = new JButton("Switch to Admin Panel");
+        // Toggle Button panel
+        JPanel controlPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        controlPanel.setBackground(Color.DARK_GRAY);
+        controlPanel.setBorder(new EmptyBorder(10, 20, 10, 20));
+        JButton toggleButton = createStyledButton("Switch to Admin Panel", Color.GRAY);
+        toggleButton.setForeground(Color.WHITE);
         controlPanel.add(toggleButton);
 
-        // Set up the layout of the main frame
+        // Frame Layout Configuration
         frame.setLayout(new BorderLayout());
         frame.add(mainPanel, BorderLayout.CENTER);
         frame.add(controlPanel, BorderLayout.SOUTH);
 
-        // Initially show the user signup panel
         CardLayout cl = (CardLayout) (mainPanel.getLayout());
         cl.show(mainPanel, "userSignupPanel");
 
-        // Toggle button to switch between user and admin panels
+        // Action Listeners
         toggleButton.addActionListener(new ActionListener() {
             boolean isAdmin = false;
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (isAdmin) {
-                    cl.show(mainPanel, "userSignupPanel");
+                    if (isUserLoggedIn) {
+                        cl.show(mainPanel, "userCarListPanel");
+                        renderUserShop(shop, frame, userCarListPanel, userTextArea, shopStatsArea, cl, mainPanel);
+                    } else {
+                        cl.show(mainPanel, "userSignupPanel");
+                    }
                     toggleButton.setText("Switch to Admin Panel");
                 } else {
                     cl.show(mainPanel, "adminPanel");
                     toggleButton.setText("Switch to User Panel");
+                    updateShopStatsArea(shop, shopStatsArea);
+                    updateCarListArea(shop, carListArea);
+                    updateAdminUserLog(userTextArea);
                 }
                 isAdmin = !isAdmin;
             }
         });
 
-        // Action listener for adding commuter cars
         addCommuterCarButton.addActionListener(e -> {
             try {
-                String carMake = commuterMakeInput.getText();
-                String carModel = commuterModelInput.getText();
-                String carYear = commuterYearInput.getText();
-                String carPrice = commuterPriceInput.getText();
-                String fuelEfficiency = fuelEfficiencyInput.getText();
-                String seatingCapacity = seatingCapacityInput.getText();
-                String trunkSpace = trunkSpaceInput.getText();
-
-                // Ensure fields are not empty
-                if (carMake.isEmpty() || carModel.isEmpty() || carYear.isEmpty() || carPrice.isEmpty() ||
-                        fuelEfficiency.isEmpty() || seatingCapacity.isEmpty() || trunkSpace.isEmpty()) {
-                    throw new IllegalArgumentException("Please fill out all fields!");
+                if (commuterMakeInput.getText().isEmpty() || commuterModelInput.getText().isEmpty()) {
+                    throw new IllegalArgumentException("Fields cannot be empty!");
                 }
-
-                // Convert numeric fields to the appropriate types and handle NumberFormatException
-                int year = Integer.parseInt(carYear);
-                int price = Integer.parseInt(carPrice);
-                double efficiency = Double.parseDouble(fuelEfficiency);
-                int capacity = Integer.parseInt(seatingCapacity);
-                double trunk = Double.parseDouble(trunkSpace);
-
-                shop.addCarToInventory(new Commuter(carMake, carModel, year, price, efficiency, capacity, trunk));
-
-                // Display all the cars in the carListArea
-                String carDetails = "";
-                for (Car car : shop.getInventory()) {
-                    carDetails += car.displayCarInfo() + "\n\n";
-                }
-                carListArea.setText(carDetails);
-
+                shop.addCarToInventory(new Commuter(
+                        commuterMakeInput.getText(), commuterModelInput.getText(),
+                        Integer.parseInt(commuterYearInput.getText()), Integer.parseInt(commuterPriceInput.getText()),
+                        Double.parseDouble(fuelEfficiencyInput.getText()), Integer.parseInt(seatingCapacityInput.getText()),
+                        Double.parseDouble(trunkSpaceInput.getText())
+                ));
+                updateShopStatsArea(shop, shopStatsArea);
+                updateCarListArea(shop, carListArea);
+                clearInputs(commuterMakeInput, commuterModelInput, commuterYearInput, commuterPriceInput, fuelEfficiencyInput, seatingCapacityInput, trunkSpaceInput);
                 JOptionPane.showMessageDialog(frame, "Commuter car added successfully!");
-            } catch (NumberFormatException nfe) {
-                // Handle invalid number formats
-                JOptionPane.showMessageDialog(frame, "Please enter valid numbers for year, price, fuel efficiency, seating capacity, and trunk space!");
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(frame, "Invalid input! Please check your numbers.", "Error", JOptionPane.ERROR_MESSAGE);
             }
         });
 
-        // Action listener for adding sports cars
         addSportsCarButton.addActionListener(e -> {
             try {
-                String carMake = sportsMakeInput.getText();
-                String carModel = sportsModelInput.getText();
-                String carYear = sportsYearInput.getText();
-                String carPrice = sportsPriceInput.getText();
-                String horsepower = horsepowerInput.getText();
-                String topSpeed = topSpeedInput.getText();
-                String acceleration = accelerationInput.getText();
-
-                // Ensure fields are not empty
-                if (carMake.isEmpty() || carModel.isEmpty() || carYear.isEmpty() || carPrice.isEmpty() ||
-                        horsepower.isEmpty() || topSpeed.isEmpty() || acceleration.isEmpty()) {
-                    throw new IllegalArgumentException("Please fill out all fields!");
+                if (sportsMakeInput.getText().isEmpty() || sportsModelInput.getText().isEmpty()) {
+                    throw new IllegalArgumentException("Fields cannot be empty!");
                 }
-
-                // Convert numeric fields to the appropriate types and handle NumberFormatException
-                int year = Integer.parseInt(carYear);
-                int price = Integer.parseInt(carPrice);
-                int hp = Integer.parseInt(horsepower);
-                int speed = Integer.parseInt(topSpeed);
-                double accel = Double.parseDouble(acceleration);
-
-                shop.addCarToInventory(new Sports(carMake, carModel, year, price, hp, speed, accel));
-
-                String carDetails = "";
-                for (Car car : shop.getInventory()) {
-                    carDetails += car.displayCarInfo() + "\n\n";
-                }
-                carListArea.setText(carDetails);
-
-                // Show success message
+                shop.addCarToInventory(new Sports(
+                        sportsMakeInput.getText(), sportsModelInput.getText(),
+                        Integer.parseInt(sportsYearInput.getText()), Integer.parseInt(sportsPriceInput.getText()),
+                        Integer.parseInt(horsepowerInput.getText()), Integer.parseInt(topSpeedInput.getText()),
+                        Double.parseDouble(accelerationInput.getText())
+                ));
+                updateShopStatsArea(shop, shopStatsArea);
+                updateCarListArea(shop, carListArea);
+                clearInputs(sportsMakeInput, sportsModelInput, sportsYearInput, sportsPriceInput, horsepowerInput, topSpeedInput, accelerationInput);
                 JOptionPane.showMessageDialog(frame, "Sports car added successfully!");
-            } catch (NumberFormatException nfe) {
-                // Handle invalid number formats
-                JOptionPane.showMessageDialog(frame, "Please enter valid numbers for year, price, horsepower, top speed, and acceleration!",
-                        "Input Error", JOptionPane.ERROR_MESSAGE);
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(frame, "Invalid input! Please check your numbers.", "Error", JOptionPane.ERROR_MESSAGE);
             }
         });
 
-        // Action listener for user sign up
         signupButton.addActionListener(e -> {
             String userName = userNameInput.getText();
             String userAddress = userAddressInput.getText();
             String userContact = userContactInput.getText();
 
             if (!userName.isEmpty() && !userAddress.isEmpty() && !userContact.isEmpty()) {
-
-                if (currentCustomer.getName() != null && !currentCustomer.getName().equalsIgnoreCase(userName)) {
-                    currentCustomer.setPurchasedCarsEmpty();
-                }
-
+                currentCustomer = new Customer();
                 currentCustomer.setName(userName);
                 currentCustomer.setAddress(userAddress);
                 currentCustomer.setContactInfo(userContact);
+                allCustomers.add(currentCustomer);
+                isUserLoggedIn = true;
 
-                userTextArea.setText(currentCustomer.getUserInfo());
+                updateAdminUserLog(userTextArea);
 
-                // Simulate sign-up success and switch to car listing panel
+                clearInputs(userNameInput, userAddressInput, userContactInput);
+
                 cl.show(mainPanel, "userCarListPanel");
-                userCarListPanel.removeAll();  // Clear previous components
-
-                // add car shop title
-                JLabel shopTitle = new JLabel("Car Shop");
-                shopTitle.setFont(new Font("Arial", Font.BOLD, 24));
-                shopTitle.setAlignmentX(Component.CENTER_ALIGNMENT);
-                userCarListPanel.add(shopTitle);
-                userCarListPanel.add(Box.createRigidArea(new Dimension(0, 20))); // Add spacing
-
-                // if inventory's not empty, show the list of cars with a "Buy" button next to each
-                if (shop.getInventory().isEmpty()) {
-                    // add car shop title
-                    JLabel noCarsLabel = new JLabel("No cars found to browse from.");
-                    noCarsLabel.setFont(new Font("Arial", Font.PLAIN, 20));
-                    noCarsLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-                    userCarListPanel.add(noCarsLabel);
-                } else {
-                    for (Car car : shop.getInventory()) {
-                        JPanel carPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-                        JLabel carLabel = new JLabel(car.displayCarInfo());
-                        JButton buyButton = new JButton("Buy");
-
-                        // Add ActionListener for the Buy button
-                        buyButton.addActionListener(e1 -> {
-                            currentCustomer.updatePurchasedCars(car);
-                            userTextArea.setText(currentCustomer.getUserInfo());
-                            JOptionPane.showMessageDialog(frame, "Contgatulations! You bought a " + car.getMake() + " " + car.getModel() + ".");
-                        });
-
-                        carPanel.add(carLabel);
-                        carPanel.add(buyButton);
-                        userCarListPanel.add(carPanel);
-                    }
-                }
-
-                userCarListPanel.revalidate();
-                userCarListPanel.repaint();
+                renderUserShop(shop, frame, userCarListPanel, userTextArea, shopStatsArea, cl, mainPanel);
             } else {
-                JOptionPane.showMessageDialog(frame, "Please fill out all fields!");
+                JOptionPane.showMessageDialog(frame, "Please fill out all fields to proceed.", "Notice", JOptionPane.WARNING_MESSAGE);
             }
         });
 
         frame.setVisible(true);
+    }
+
+    private static void renderUserShop(CarShop shop, JFrame frame, JPanel userCarListPanel, JTextArea userTextArea, JTextArea shopStatsArea, CardLayout cl, JPanel mainPanel) {
+        userCarListPanel.removeAll();
+
+        JPanel headerPanel = new JPanel(new BorderLayout());
+        headerPanel.setBackground(BG_COLOR);
+        
+        JLabel shopTitle = new JLabel("Available Cars");
+        shopTitle.setFont(TITLE_FONT);
+        shopTitle.setForeground(TEXT_COLOR);
+        headerPanel.add(shopTitle, BorderLayout.WEST);
+
+        JButton logoutButton = createStyledButton("Log Out", DANGER_COLOR);
+        logoutButton.addActionListener(e -> {
+            isUserLoggedIn = false;
+            currentCustomer = null;
+            cl.show(mainPanel, "userSignupPanel");
+            JOptionPane.showMessageDialog(frame, "You have successfully logged out.");
+        });
+        headerPanel.add(logoutButton, BorderLayout.EAST);
+        
+        headerPanel.setMaximumSize(new Dimension(800, 50));
+        userCarListPanel.add(headerPanel);
+        userCarListPanel.add(Box.createRigidArea(new Dimension(0, 30)));
+
+        if (shop.getInventory().isEmpty()) {
+            JLabel noCarsLabel = new JLabel("No cars currently available in the shop.");
+            noCarsLabel.setFont(LABEL_FONT);
+            noCarsLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+            userCarListPanel.add(noCarsLabel);
+        } else {
+            for (Car car : shop.getInventory()) {
+                JPanel carCard = new JPanel(new BorderLayout(15, 15));
+                carCard.setBackground(Color.WHITE);
+                carCard.setBorder(BorderFactory.createCompoundBorder(
+                        BorderFactory.createLineBorder(new Color(220, 224, 229), 1, true),
+                        new EmptyBorder(15, 15, 15, 15)
+                ));
+                carCard.setMaximumSize(new Dimension(1000, 160));
+
+                String infoStr = car.displayCarInfo();
+                String formattedInfo = infoStr.replace(" | ", "<br>");
+
+                JLabel carLabel = new JLabel("<html><b>" + car.getMake() + " " + car.getModel() + "</b> (" + car.getYear() + ")<br>" +
+                        "<div style='margin-top: 5px; color: #555;'>" + formattedInfo + "</div></html>");
+                carLabel.setFont(INPUT_FONT);
+                
+                JPanel actionPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+                actionPanel.setBackground(Color.WHITE);
+                
+                // --- Add Interactive Tools ---
+                JButton estimateInsuranceBtn = createStyledButton("Estimate Insurance", new Color(142, 68, 173)); // Purple
+                estimateInsuranceBtn.addActionListener(e2 -> {
+                    String ageStr = JOptionPane.showInputDialog(frame, "Enter Driver Age to estimate insurance:");
+                    try {
+                        if (ageStr != null) {
+                            int age = Integer.parseInt(ageStr);
+                            double est = car.estimateInsurance(age);
+                            JOptionPane.showMessageDialog(frame, "Estimated Annual Insurance: " + String.format("%.2f", est) + " Taka");
+                        }
+                    } catch (Exception ex) {
+                        JOptionPane.showMessageDialog(frame, "Invalid Age!", "Error", JOptionPane.ERROR_MESSAGE);
+                    }
+                });
+                actionPanel.add(estimateInsuranceBtn);
+
+                if (car instanceof Commuter) {
+                    Commuter cCar = (Commuter) car;
+                    JButton tripCostBtn = createStyledButton("Calculate Trip Cost", new Color(52, 152, 219)); // Light Blue
+                    tripCostBtn.addActionListener(e2 -> {
+                        try {
+                            String distStr = JOptionPane.showInputDialog(frame, "Enter Distance (KM):");
+                            if (distStr == null) return;
+                            String priceStr = JOptionPane.showInputDialog(frame, "Enter Fuel Price per Liter (Taka):");
+                            if (priceStr == null) return;
+                            
+                            double dist = Double.parseDouble(distStr);
+                            double price = Double.parseDouble(priceStr);
+                            double cost = cCar.calculateTravelCost(dist, price);
+                            JOptionPane.showMessageDialog(frame, "Estimated Trip Cost: " + String.format("%.2f", cost) + " Taka");
+                        } catch(Exception ex) {
+                            JOptionPane.showMessageDialog(frame, "Invalid Input!", "Error", JOptionPane.ERROR_MESSAGE);
+                        }
+                    });
+                    actionPanel.add(tripCostBtn);
+                } else if (car instanceof Sports) {
+                    Sports sCar = (Sports) car;
+                    JButton raceBtn = createStyledButton("1/4 Mile Time", new Color(211, 84, 0)); // Orange
+                    raceBtn.addActionListener(e2 -> {
+                        double time = sCar.calculateQuarterMileTime();
+                        boolean trackReady = sCar.isTrackReady();
+                        JOptionPane.showMessageDialog(frame, "Estimated 1/4 Mile Time: " + String.format("%.2f", time) + " seconds\n" +
+                                "Track Ready: " + (trackReady ? "Yes" : "No"));
+                    });
+                    actionPanel.add(raceBtn);
+                }
+                
+                JButton buyButton = createStyledButton("Purchase", SUCCESS_COLOR);
+                buyButton.addActionListener(e1 -> {
+                    currentCustomer.updatePurchasedCars(car);
+                    updateAdminUserLog(userTextArea);
+                    shop.removeCar(car); // Remove car from shop after purchase
+                    updateShopStatsArea(shop, shopStatsArea);
+                    
+                    JOptionPane.showMessageDialog(frame, "Congratulations! You bought a " + car.getMake() + " " + car.getModel() + ".");
+                    // refresh shop view
+                    renderUserShop(shop, frame, userCarListPanel, userTextArea, shopStatsArea, cl, mainPanel);
+                });
+
+                actionPanel.add(buyButton);
+                carCard.add(carLabel, BorderLayout.CENTER);
+                carCard.add(actionPanel, BorderLayout.SOUTH);
+                userCarListPanel.add(carCard);
+                userCarListPanel.add(Box.createRigidArea(new Dimension(0, 15)));
+            }
+        }
+        userCarListPanel.revalidate();
+        userCarListPanel.repaint();
+    }
+
+    // Helper methods for styling
+    private static JTextField createStyledTextField() {
+        JTextField field = new JTextField();
+        field.setFont(INPUT_FONT);
+        field.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(new Color(189, 195, 199), 1, true),
+                new EmptyBorder(5, 10, 5, 10)
+        ));
+        return field;
+    }
+
+    private static JButton createStyledButton(String text, Color bgColor) {
+        JButton button = new JButton(text);
+        button.setFont(BUTTON_FONT);
+        button.setBackground(bgColor);
+        button.setForeground(Color.WHITE);
+        button.setFocusPainted(false);
+        button.setBorder(new EmptyBorder(10, 20, 10, 20));
+        button.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        return button;
+    }
+
+    private static void addFormRow(JPanel panel, String labelText, JTextField textField) {
+        JLabel label = new JLabel(labelText);
+        label.setFont(LABEL_FONT);
+        label.setForeground(TEXT_COLOR);
+        panel.add(label);
+        panel.add(textField);
+    }
+
+    private static void styleTextArea(JTextArea textArea) {
+        textArea.setEditable(false);
+        textArea.setFont(INPUT_FONT);
+        textArea.setBackground(new Color(250, 251, 252));
+        textArea.setBorder(new EmptyBorder(10, 10, 10, 10));
+    }
+
+    private static void updateShopStatsArea(CarShop shop, JTextArea shopStatsArea) {
+        StringBuilder stats = new StringBuilder();
+        stats.append("Total Inventory Value: ").append(shop.getTotalInventoryValue()).append(" Taka\n");
+        stats.append("Average Car Price: ").append(String.format("%.2f", shop.getAveragePrice())).append(" Taka\n");
+        
+        Car mostExp = shop.getMostExpensiveCar();
+        if (mostExp != null) {
+            stats.append("Most Expensive Car: ").append(mostExp.getMake()).append(" ").append(mostExp.getModel())
+                 .append(" (").append(mostExp.getPrice()).append(" Taka)\n");
+        } else {
+            stats.append("Most Expensive Car: N/A\n");
+        }
+        
+        Car cheapest = shop.getCheapestCar();
+        if (cheapest != null) {
+            stats.append("Cheapest Car: ").append(cheapest.getMake()).append(" ").append(cheapest.getModel())
+                 .append(" (").append(cheapest.getPrice()).append(" Taka)\n");
+        } else {
+            stats.append("Cheapest Car: N/A\n");
+        }
+        
+        shopStatsArea.setText(stats.toString());
+        shopStatsArea.setCaretPosition(0);
+    }
+
+    private static void updateCarListArea(CarShop shop, JTextArea carListArea) {
+        StringBuilder carDetails = new StringBuilder();
+        for (Car car : shop.getInventory()) {
+            carDetails.append(car.displayCarInfo()).append("\n\n");
+        }
+        carListArea.setText(carDetails.toString());
+        carListArea.setCaretPosition(0);
+    }
+
+    private static void updateAdminUserLog(JTextArea userTextArea) {
+        StringBuilder allLogs = new StringBuilder();
+        if (allCustomers.isEmpty()) {
+            allLogs.append("No users have signed up yet.");
+        } else {
+            for (Customer c : allCustomers) {
+                allLogs.append("--- CUSTOMER LOG ---\n");
+                allLogs.append(c.getUserInfo()).append("\n");
+            }
+        }
+        userTextArea.setText(allLogs.toString());
+        userTextArea.setCaretPosition(0);
+    }
+
+    private static void clearInputs(JTextField... fields) {
+        for (JTextField field : fields) {
+            field.setText("");
+        }
     }
 }

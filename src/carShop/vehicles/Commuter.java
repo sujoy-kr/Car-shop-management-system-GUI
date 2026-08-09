@@ -1,4 +1,4 @@
-package carShop;
+package carShop.vehicles;
 
 public class Commuter extends Car {
     private final double fuelEfficiency;
@@ -28,6 +28,25 @@ public class Commuter extends Car {
 
     public boolean isFamilyFriendly() {
         return seatingCapacity >= 5 && trunkSpace >= 15.0;
+    }
+
+    // Methods for JUnit testing
+    public double calculateTravelCost(double distanceKm, double fuelPricePerLiter) {
+        if (fuelEfficiency <= 0) return -1.0;
+        double litersNeeded = distanceKm / fuelEfficiency;
+        return litersNeeded * fuelPricePerLiter;
+    }
+    
+    public boolean canFitLuggage(double totalLuggageVolume) {
+        return totalLuggageVolume <= trunkSpace;
+    }
+    
+    public boolean isHighlyEfficient() {
+        return fuelEfficiency >= 20.0;
+    }
+    
+    public int maxPassengersIncludingDriver() {
+        return seatingCapacity;
     }
 
     // polymorphism override

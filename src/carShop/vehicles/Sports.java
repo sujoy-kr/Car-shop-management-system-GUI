@@ -1,4 +1,4 @@
-package carShop;
+package carShop.vehicles;
 
 public class Sports extends Car {
     // Additional properties specific to Sports cars
@@ -29,6 +29,31 @@ public class Sports extends Car {
 
     public boolean isHyperCar() {
         return topSpeed >= 400 && acceleration0to60 <= 3.0;
+    }
+
+    // Methods for JUnit testing
+    public double calculateQuarterMileTime() {
+        if (horsepower <= 0) return Double.MAX_VALUE;
+        return 14.0 / (horsepower / 200.0) + acceleration0to60;
+    }
+    
+    public boolean isTrackReady() {
+        return horsepower > 300 && topSpeed > 250;
+    }
+    
+    public double estimateAnnualMaintenanceCost(int milesDriven) {
+        double baseCost = 1000.0;
+        double costPerMile = 0.5;
+        if (horsepower > 500) {
+            baseCost *= 1.5;
+            costPerMile = 1.0;
+        }
+        return baseCost + (milesDriven * costPerMile);
+    }
+    
+    public boolean beatsInDragRace(Sports opponent) {
+        if (opponent == null) return true;
+        return this.calculateQuarterMileTime() < opponent.calculateQuarterMileTime();
     }
 
     // polymorphism override
