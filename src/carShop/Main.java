@@ -382,7 +382,7 @@ public class Main {
                         BorderFactory.createLineBorder(new Color(220, 224, 229), 1, true),
                         new EmptyBorder(15, 15, 15, 15)
                 ));
-                carCard.setMaximumSize(new Dimension(1000, 160));
+                carCard.setMaximumSize(new Dimension(1000, 350));
 
                 String infoStr = car.displayCarInfo();
                 String formattedInfo = infoStr.replace(" | ", "<br>");
@@ -431,6 +431,22 @@ public class Main {
                     actionPanel.add(tripCostBtn);
                 } else if (car instanceof Sports) {
                     Sports sCar = (Sports) car;
+                    
+                    JButton maintenanceBtn = createStyledButton("Maintenance Cost", new Color(46, 204, 113)); // Emerald Green
+                    maintenanceBtn.addActionListener(e2 -> {
+                        String milesStr = JOptionPane.showInputDialog(frame, "Enter Miles Driven per Year:");
+                        try {
+                            if (milesStr != null) {
+                                int miles = Integer.parseInt(milesStr);
+                                double cost = sCar.estimateAnnualMaintenanceCost(miles);
+                                JOptionPane.showMessageDialog(frame, "Estimated Annual Maintenance Cost: " + String.format("%.2f", cost) + " Taka");
+                            }
+                        } catch (Exception ex) {
+                            JOptionPane.showMessageDialog(frame, "Invalid Input!", "Error", JOptionPane.ERROR_MESSAGE);
+                        }
+                    });
+                    actionPanel.add(maintenanceBtn);
+
                     JButton raceBtn = createStyledButton("1/4 Mile Time", new Color(211, 84, 0)); // Orange
                     raceBtn.addActionListener(e2 -> {
                         double time = sCar.calculateQuarterMileTime();

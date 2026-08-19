@@ -66,6 +66,7 @@ public class Sports extends Car {
                 "Horsepower: " + getHorsepower() + " HP | " +
                 "Top Speed: " + getTopSpeed() + " KM/H | " +
                 "0-60 KM/H Acceleration: " + getAcceleration0to60() + " seconds | " +
-                "Is Hyper Car: " + (isHyperCar() ? "Yes" : "No");
+                "Is Hyper Car: " + (isHyperCar() ? "✓" : "✗") +
+                (isTrackReady() ? " | Track Ready: ✓" : "");
     }
 }

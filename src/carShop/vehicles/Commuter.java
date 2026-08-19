@@ -59,6 +59,6 @@ public class Commuter extends Car {
                 "Fuel Efficiency: " + getFuelEfficiency() + " KMPL | " +
                 "Seating Capacity: " + getSeatingCapacity() + " persons | " +
                 "Trunk Space: " + getTrunkSpace() + " cubic feet | " +
-                "Family Friendly: " + (isFamilyFriendly() ? "Yes" : "No");
+                "Family Friendly: " + (isFamilyFriendly() ? "✓" : "✗");
     }
 }
